@@ -55,6 +55,12 @@ def reservation_edit(request, pk):
     item = get_object_or_404(Reservation, pk=pk, user=request.user)
     if not item.confirmed:
         return redirect("reservation_list")
+
+    # Ощибка 403
+    #from django.core.exceptions import PermissionDenied
+    #if not item.confirmed:
+        raise PermissionDenied("Отменённое бронирование нельзя редактировать.")
+
     form = ReservationForm(request.POST or None, instance=item)
     if request.method == "POST" and form.is_valid():
         form.save()

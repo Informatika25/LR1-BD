@@ -11,6 +11,6 @@ class EquipmentAdmin(admin.ModelAdmin):
 
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ("equipment", "user", "start", "end", "confirmed")
+    list_display = ("id", "equipment", "user", "start", "end", "confirmed")
     list_filter = ("confirmed", "equipment")
     search_fields = ("equipment__name", "user__username")

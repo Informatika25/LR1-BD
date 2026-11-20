@@ -20,6 +20,10 @@
           {% if request.user.is_staff %}
             <a href="/admin/" class="btn btn-outline-secondary btn-sm">Админка</a>
           {% endif %}
+          <form method="post" action="{% url 'logout' %}" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm">Выйти</button>
+          </form>
         </div>
       </div>
     </header>
