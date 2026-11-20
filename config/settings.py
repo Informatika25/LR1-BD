@@ -5,7 +5,6 @@ from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
@@ -16,56 +15,17 @@ if not SECRET_KEY:
         raise ImproperlyConfigured("Set DJANGO_SECRET_KEY")
 
 ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get(
-        "DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost"
-    ).split(",")
-    if host.strip()
+    h.strip()
+    for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+    if h.strip()
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get(
+    o.strip()
+    for o in os.environ.get(
         "DJANGO_CSRF_TRUSTED_ORIGINS", "http://127.0.0.1:8000"
     ).split(",")
-    if origin.strip()
-]
-
-DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
-
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-if not SECRET_KEY:
-    if DEBUG:
-        SECRET_KEY = "dev-only-insecure-key"
-    else:
-        raise ImproperlyConfigured("Set DJANGO_SECRET_KEY")
-
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get(
-        "DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost"
-    ).split(",")
-    if host.strip()
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get(
-        "DJANGO_CSRF_TRUSTED_ORIGINS", "http://127.0.0.1:8000"
-    ).split(",")
-    if origin.strip()
-]
-
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")
-    if host.strip()
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
-    if origin.strip()
+    if o.strip()
 ]
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

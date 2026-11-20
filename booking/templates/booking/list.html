@@ -75,11 +75,11 @@
             </td>
             <td class="text-end">
               <div class="d-inline-flex gap-1">
-                <a href="{% url 'reservation_edit' item.pk %}" class="btn btn-outline-primary btn-sm">
-                  Изменить
-                </a>
-
                 {% if item.confirmed %}
+                  <a href="{% url 'reservation_edit' item.pk %}" class="btn btn-outline-primary btn-sm">
+                    Изменить
+                  </a>
+
                   <form method="post" action="{% url 'reservation_cancel' item.pk %}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-outline-warning btn-sm">Отменить</button>

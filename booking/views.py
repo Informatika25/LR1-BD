@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from .forms import RegisterForm, ReservationForm
 from .models import Equipment, Reservation
+from django.utils.dateparse import parse_date
+
 
 @login_required
 def reservation_list(request):
@@ -16,10 +18,15 @@ def reservation_list(request):
     equipment_id = request.GET.get("equipment")
     start_date = request.GET.get("date")
 
-    if equipment_id:
+    if equipment_id and equipment_id.isdigit():
         items = items.filter(equipment_id=equipment_id)
     if start_date:
-        items = items.filter(start__date=start_date)
+        try:
+            parsed = parse_date(start_date)
+        except ValueError:
+            parsed = None
+        if parsed:
+            items = items.filter(start__date=parsed)
 
     equipments = Equipment.objects.all()
     return render(
@@ -46,6 +53,8 @@ def reservation_create(request):
 @login_required
 def reservation_edit(request, pk):
     item = get_object_or_404(Reservation, pk=pk, user=request.user)
+    if not item.confirmed:
+        return redirect("reservation_list")
     form = ReservationForm(request.POST or None, instance=item)
     if request.method == "POST" and form.is_valid():
         form.save()
