@@ -1,9 +1,9 @@
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
-from .forms import ReservationForm
+from .forms import RegisterForm, ReservationForm
 from .models import Equipment, Reservation
-
 
 @login_required
 def reservation_list(request):
@@ -33,7 +33,6 @@ def reservation_list(request):
         },
     )
 
-
 @login_required
 def reservation_create(request):
     form = ReservationForm(request.POST or None)
@@ -44,7 +43,6 @@ def reservation_create(request):
         return redirect("reservation_list")
     return render(request, "booking/form.html", {"form": form})
 
-
 @login_required
 def reservation_edit(request, pk):
     item = get_object_or_404(Reservation, pk=pk, user=request.user)
@@ -54,7 +52,6 @@ def reservation_edit(request, pk):
         return redirect("reservation_list")
     return render(request, "booking/form.html", {"form": form})
 
-
 @login_required
 @require_POST
 def reservation_cancel(request, pk):
@@ -63,10 +60,24 @@ def reservation_cancel(request, pk):
     item.save(update_fields=["confirmed"])
     return redirect("reservation_list")
 
-
 @login_required
 @require_POST
 def reservation_delete(request, pk):
     item = get_object_or_404(Reservation, pk=pk, user=request.user)
     item.delete()
     return redirect("reservation_list")
+
+def register(request):
+    if request.user.is_authenticated:
+        return redirect("reservation_list")
+
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("reservation_list")
+    else:
+        form = RegisterForm()
+
+    return render(request, "registration/register.html", {"form": form})
