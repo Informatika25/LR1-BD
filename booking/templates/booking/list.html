@@ -1,0 +1,107 @@
+{% extends "booking/base.html" %}
+
+{% block title %}Мои бронирования{% endblock %}
+
+{% block content %}
+<div class="page-header d-print-none mb-3">
+  <div class="row align-items-center">
+    <div class="col">
+      <h2 class="page-title">Мои бронирования</h2>
+    </div>
+    <div class="col-auto">
+      <a href="{% url 'reservation_create' %}" class="btn btn-primary">
+        + Создать бронь
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Карточка фильтрации -->
+<div class="card mb-3">
+  <div class="card-body">
+    <form method="get" class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label">Оборудование</label>
+        <select name="equipment" class="form-select">
+          <option value="">Все устройства</option>
+          {% for eq in equipments %}
+            <option value="{{ eq.id }}" {% if selected_equipment == eq.id|stringformat:"s" %}selected{% endif %}>
+              {{ eq.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Дата начала</label>
+        <input type="date" name="date" value="{{ selected_date }}" class="form-control">
+      </div>
+
+      <div class="col-md-5 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Найти</button>
+        <a href="{% url 'reservation_list' %}" class="btn btn-outline-secondary">Сбросить</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Таблица бронирований -->
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr>
+          <th>Оборудование</th>
+          <th>Интервал</th>
+          <th>Цель</th>
+          <th>Статус</th>
+          <th class="text-end">Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td class="fw-medium">{{ item.equipment.name }}</td>
+            <td class="text-secondary">
+              {{ item.start|date:"d.m.Y H:i" }} — {{ item.end|date:"d.m.Y H:i" }}
+            </td>
+            <td>{{ item.purpose }}</td>
+            <td>
+              {% if item.confirmed %}
+                <span class="badge bg-green-lt">Подтверждено</span>
+              {% else %}
+                <span class="badge bg-secondary-lt">Отменено</span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              <div class="d-inline-flex gap-1">
+                <a href="{% url 'reservation_edit' item.pk %}" class="btn btn-outline-primary btn-sm">
+                  Изменить
+                </a>
+
+                {% if item.confirmed %}
+                  <form method="post" action="{% url 'reservation_cancel' item.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-warning btn-sm">Отменить</button>
+                  </form>
+                {% endif %}
+
+                <form method="post" action="{% url 'reservation_delete' item.pk %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-outline-danger btn-sm">Удалить</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="text-center text-secondary py-4">
+              Бронирований пока нет.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Бронирование оборудования{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+</head>
+<body>
+  <div class="page">
+    <header class="navbar navbar-expand-md d-print-none">
+      <div class="container-xl">
+        <a href="{% url 'reservation_list' %}" class="navbar-brand navbar-brand-autodark">
+          Бронирование оборудования
+        </a>
+        <div class="navbar-nav flex-row order-md-last align-items-center gap-3">
+          <span class="text-secondary small">
+            Пользователь: <strong>{{ request.user.username }}</strong>
+          </span>
+          {% if request.user.is_staff %}
+            <a href="/admin/" class="btn btn-outline-secondary btn-sm">Админка</a>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+
+    <div class="page-wrapper">
+      <div class="page-body">
+        <div class="container-xl">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+</body>
+</html>
