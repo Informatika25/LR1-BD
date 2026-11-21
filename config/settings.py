@@ -1,37 +1,10 @@
-import os
 from pathlib import Path
-import dj_database_url
-from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
-
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-if not SECRET_KEY:
-    if DEBUG:
-        SECRET_KEY = "dev-only-insecure-key"
-    else:
-        raise ImproperlyConfigured("Set DJANGO_SECRET_KEY")
-
-ALLOWED_HOSTS = [
-    h.strip()
-    for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
-    if h.strip()
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    o.strip()
-    for o in os.environ.get(
-        "DJANGO_CSRF_TRUSTED_ORIGINS", "http://127.0.0.1:8000"
-    ).split(",")
-    if o.strip()
-]
-
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
-
-# Application definition
+SECRET_KEY = "dev-only-insecure-key"
+DEBUG = True
+ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -40,12 +13,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "booking",
+    'booking',
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -72,67 +44,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = "ru-ru"
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+]
+
+LANGUAGE_CODE = 'ru-ru'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
+
+STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-LOGIN_REDIRECT_URL = "/booking/"
-LOGIN_URL = "/accounts/login/"
-LOGOUT_REDIRECT_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = '/booking/'
+LOGIN_URL = '/accounts/login/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'

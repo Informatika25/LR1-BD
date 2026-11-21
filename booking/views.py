@@ -59,7 +59,7 @@ def reservation_edit(request, pk):
     # Ощибка 403
     #from django.core.exceptions import PermissionDenied
     #if not item.confirmed:
-        raise PermissionDenied("Отменённое бронирование нельзя редактировать.")
+       #raise PermissionDenied("Отменённое бронирование нельзя редактировать.")
 
     form = ReservationForm(request.POST or None, instance=item)
     if request.method == "POST" and form.is_valid():
